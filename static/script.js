@@ -371,7 +371,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/failure_frequency');
             const data = await response.json();
 
-            if (!data.success || data.data.length === 0 || data.data.every(item => item.incorrect_count === 0)) {
+            // Filter out words with incorrect_count of 0
+            const filteredData = data.data.filter(item => item.incorrect_count > 0);
+
+            if (!data.success || filteredData.length === 0) { // Check filtered data length
                 failureChartSection.classList.add('hidden'); // Hide if no data or all counts are zero
                 if (failureChartInstance) {
                     failureChartInstance.destroy(); // Destroy existing chart if no data
@@ -381,8 +384,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             failureChartSection.classList.remove('hidden'); // Show if data exists
 
-            const words = data.data.map(item => item.word);
-            const incorrectCounts = data.data.map(item => item.incorrect_count);
+            const words = filteredData.map(item => item.word);
+            const incorrectCounts = filteredData.map(item => item.incorrect_count);
 
             // Calculate cumulative percentage for Pareto chart
             let totalIncorrectAttempts = incorrectCounts.reduce((sum, count) => sum + count, 0);
