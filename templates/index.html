@@ -1,0 +1,105 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Flash Cards</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Font Awesome for icons -->
+</head>
+<body>
+    <div class="container">
+        <h1>Vocabulary Flash Cards</h1>
+
+        <!-- Section for CSV Upload and Database Management -->
+        <div class="card-section" id="management-section">
+            <h2>Database Management</h2>
+            <form id="csv-upload-form" class="form-section">
+                <label for="csv_file">Upload Vocabulary CSV:</label>
+                <input type="file" id="csv_file" name="csv_file" accept=".csv">
+                <button type="submit" class="button primary-button">Upload CSV</button>
+            </form>
+            <div id="upload-message" class="message"></div>
+
+            <h3>Current Vocabulary Words</h3>
+            <div class="word-list-container">
+                <table id="word-list-table">
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>Correct</th>
+                            <th>Incorrect</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Words will be loaded here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="refresh-words-btn" class="button secondary-button">Refresh Word List</button>
+            <!-- New button to navigate to the test parameters section -->
+            <button id="go-to-test-params-btn" class="button primary-button spaced-top">Start New Test</button>
+        </div>
+
+        <!-- Section for Test Parameters -->
+        <div class="card-section hidden" id="params-section">
+            <h2>Start Flashcard Test</h2>
+            <div class="form-section">
+                <label for="num-words">Number of words to test (0 for all):</label>
+                <input type="number" id="num-words" value="10" min="0">
+                <button id="start-test-btn" class="button primary-button">Start Test</button>
+            </div>
+        </div>
+
+        <!-- Section for Flash Card Session -->
+        <div class="card-section hidden" id="flashcard-section">
+            <h2 id="word-counter">Word 1 of X</h2>
+            <div class="word-display-area">
+                <p id="current-word" class="large-text"></p>
+                <!-- Removed "Play Audio (Simulated)" button as pronunciation is human-judged -->
+            </div>
+            <div class="pronunciation-feedback">
+                <button id="correct-btn" class="button correct-button">Correct</button>
+                <button id="incorrect-btn" class="button incorrect-button">Incorrect</button>
+            </div>
+        </div>
+
+        <!-- Section for Test Results -->
+        <div class="card-section hidden" id="results-section">
+            <h2>Test Results</h2>
+            <p>You have completed the flashcard session!</p>
+            <p>Total Correct Pronunciations: <span id="results-correct">0</span></p>
+            <p>Total Incorrect Pronunciations: <span id="results-incorrect">0</span></p>
+            <p>Overall Accuracy: <span id="results-percentage">0%</span></p>
+            <button id="restart-test-btn" class="button primary-button">Start New Test</button>
+            <button id="view-overall-stats-btn" class="button secondary-button">View Overall Database Stats</button>
+        </div>
+
+        <!-- Overall Database Statistics Section -->
+        <div class="card-section hidden" id="overall-stats-section">
+            <h2>Overall Database Statistics</h2>
+            <p>Total Correct Across All Words: <span id="overall-correct">0</span></p>
+            <p>Total Incorrect Across All Words: <span id="overall-incorrect">0</span></p>
+            <p>Overall Database Accuracy: <span id="overall-percentage">0%</span></p>
+            <button id="back-to-main-btn" class="button secondary-button">Back to Main</button>
+        </div>
+
+        <!-- Custom Modal for Delete/Update Confirmation -->
+        <div id="custom-modal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <p id="modal-message"></p>
+                <input type="text" id="modal-input" class="hidden">
+                <div class="modal-buttons">
+                    <button id="modal-confirm-btn" class="button primary-button">Confirm</button>
+                    <button id="modal-cancel-btn" class="button secondary-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
