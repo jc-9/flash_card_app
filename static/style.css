@@ -1,5 +1,6 @@
 /* static/style.css */
-@import url('[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap)');
+/* Corrected Google Fonts @import URL */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
 body {
     font-family: 'Inter', sans-serif;
@@ -327,6 +328,16 @@ button:active {
     border-color: #0056b3;
 }
 
+/* Inline SVG icon styles for table buttons */
+.icon {
+    display: inline-block;
+    width: 1em; /* Adjust size as needed */
+    height: 1em;
+    vertical-align: -0.125em; /* Align with text */
+    fill: currentColor; /* Inherit color from parent */
+}
+
+
 /* Modal Styling */
 .modal {
     position: fixed;
@@ -402,6 +413,26 @@ button:active {
     gap: 20px; /* More space between buttons */
 }
 
+/* New styles for chart */
+.chart-container {
+    position: relative;
+    height: 400px; /* Fixed height for the chart */
+    width: 100%;
+    margin: 20px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Consistent shadow with card-section */
+}
+
+.chart-description {
+    text-align: center;
+    font-size: 0.95em;
+    color: #666;
+    margin-top: 15px;
+    line-height: 1.4;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -444,6 +475,11 @@ button:active {
     .modal-content {
         padding: 25px;
     }
+
+    .chart-container {
+        height: 300px; /* Adjust height for smaller screens */
+        padding: 15px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -478,5 +514,9 @@ button:active {
         margin-bottom: 5px; /* Add bottom margin for stacking */
         width: 100%;
         display: block; /* Make them block level to stack */
+    }
+
+    .chart-container {
+        height: 250px; /* Further adjust height for very small screens */
     }
 }

@@ -1,11 +1,18 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vocabulary Flash Cards</title>
+    <!-- Add a favicon to prevent 404 for /favicon.ico -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
     <link rel="stylesheet" href="/static/style.css">
+    <!-- Corrected CDN URLs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Font Awesome for icons -->
+    <!-- Removed Font Awesome, using inline SVGs for icons -->
+    <!-- Chart.js for the bar chart - Corrected URL -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -38,8 +45,17 @@
                 </table>
             </div>
             <button id="refresh-words-btn" class="button secondary-button">Refresh Word List</button>
-            <!-- New button to navigate to the test parameters section -->
+            <!-- Button to navigate to the test parameters section -->
             <button id="go-to-test-params-btn" class="button primary-button spaced-top">Start New Test</button>
+        </div>
+
+        <!-- Section for Failure Frequency Chart (New Feature) -->
+        <div class="card-section hidden" id="failure-chart-section">
+            <h2>Words by Failure Frequency</h2>
+            <div class="chart-container">
+                <canvas id="failureFrequencyChart"></canvas>
+            </div>
+            <p class="chart-description">Shows words with the highest number of incorrect pronunciations. A line indicates cumulative percentage.</p>
         </div>
 
         <!-- Section for Test Parameters -->
@@ -48,7 +64,8 @@
             <div class="form-section">
                 <label for="num-words">Number of words to test (0 for all):</label>
                 <input type="number" id="num-words" value="10" min="0">
-                <button id="start-test-btn" class="button primary-button">Start Test</button>
+                <!-- Changed type from "submit" to "button" -->
+                <button type="button" id="start-test-btn" class="button primary-button">Start Test</button>
             </div>
         </div>
 

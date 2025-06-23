@@ -1,3 +1,4 @@
+// static/script.js
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const managementSection = document.getElementById('management-section');
@@ -5,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const flashcardSection = document.getElementById('flashcard-section');
     const resultsSection = document.getElementById('results-section');
     const overallStatsSection = document.getElementById('overall-stats-section');
+    const failureChartSection = document.getElementById('failure-chart-section'); // New chart section
 
     const csvUploadForm = document.getElementById('csv-upload-form');
     const uploadMessage = document.getElementById('upload-message');
@@ -26,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToMainBtn = document.getElementById('back-to-main-btn');
     const wordListTableBody = document.querySelector('#word-list-table tbody');
     const refreshWordsBtn = document.getElementById('refresh-words-btn');
-    const goToTestParamsBtn = document.getElementById('go-to-test-params-btn'); // New element reference
+    const goToTestParamsBtn = document.getElementById('go-to-test-params-btn');
 
     // Custom Modal Elements
     const customModal = document.getElementById('custom-modal');
@@ -36,6 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalCancelBtn = document.getElementById('modal-cancel-btn');
     const closeModalBtn = document.querySelector('.close-button');
 
+    // Chart.js elements
+    const failureFrequencyChartCanvas = document.getElementById('failureFrequencyChart');
+    let failureChartInstance = null; // To hold the Chart.js instance
 
     // State Variables
     let currentWord = null;
@@ -56,7 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
         flashcardSection.classList.add('hidden');
         resultsSection.classList.add('hidden');
         overallStatsSection.classList.add('hidden');
+        failureChartSection.classList.add('hidden'); // Also hide chart section by default
         section.classList.remove('hidden');
+
+        // Special handling for management section to ensure chart is visible
+        if (section === managementSection) {
+            loadFailureFrequencyChart(); // Load chart when main management section is shown
+        }
     }
 
     // --- CSV Upload and Database Management ---
@@ -72,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.success) {
                 displayMessage(uploadMessage, data.message, 'success');
                 loadWordList(); // Refresh the word list after upload
+                loadFailureFrequencyChart(); // Also reload chart after CSV upload
             } else {
                 displayMessage(uploadMessage, data.message, 'error');
             }
@@ -106,13 +118,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const actionsCell = row.insertCell(3);
 
                     const editBtn = document.createElement('button');
-                    editBtn.textContent = 'Edit';
+                    editBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L18.75 7.25l-3.75-3.75L3 17.25zM20.71 5.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Edit';
                     editBtn.classList.add('button', 'edit-button');
                     editBtn.addEventListener('click', () => openEditModal(word.id, word.word_text));
                     actionsCell.appendChild(editBtn);
 
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete';
                     deleteBtn.classList.add('button', 'delete-button');
                     deleteBtn.addEventListener('click', () => openDeleteModal(word.id, word.word_text));
                     actionsCell.appendChild(deleteBtn);
@@ -135,6 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     refreshWordsBtn.addEventListener('click', loadWordList);
+    refreshWordsBtn.addEventListener('click', loadFailureFrequencyChart); // Also refresh chart on button click
+
 
     // --- New button to navigate to test parameters ---
     goToTestParamsBtn.addEventListener('click', () => {
@@ -179,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.success) {
                     displayMessage(uploadMessage, data.message, 'success');
                     loadWordList(); // Refresh list
+                    loadFailureFrequencyChart(); // Refresh chart after deletion
                 } else {
                     displayMessage(uploadMessage, data.message, 'error');
                 }
@@ -210,6 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.success) {
                     displayMessage(uploadMessage, data.message, 'success');
                     loadWordList(); // Refresh list
+                    loadFailureFrequencyChart(); // Refresh chart after update
                 } else {
                     displayMessage(uploadMessage, data.message, 'error');
                 }
@@ -289,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         correctSound.triggerAttackRelease("C5", "8n"); // Play a higher note for correct
         await updateWordStats(currentWord.id, true);
         loadNextWord();
+        // Removed: loadFailureFrequencyChart(); // DO NOT refresh chart during test
     });
 
     incorrectBtn.addEventListener('click', async () => {
@@ -296,6 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         incorrectSound.triggerAttackRelease("8n"); // Play noise for incorrect
         await updateWordStats(currentWord.id, false);
         loadNextWord();
+        // Removed: loadFailureFrequencyChart(); // DO NOT refresh chart during test
     });
 
     async function updateWordStats(wordId, isCorrect) {
@@ -318,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsCorrect.textContent = sessionCorrect;
         resultsIncorrect.textContent = sessionIncorrect;
         resultsPercentage.textContent = `${percentage.toFixed(2)}%`;
+        loadFailureFrequencyChart(); // Refresh chart after session ends
     }
 
     restartTestBtn.addEventListener('click', () => {
@@ -346,7 +365,155 @@ document.addEventListener('DOMContentLoaded', () => {
         showSection(managementSection); // Go back to the CSV upload/management section
     });
 
+    // --- Chart Logic for Failure Frequency ---
+    async function loadFailureFrequencyChart() {
+        try {
+            const response = await fetch('/api/failure_frequency');
+            const data = await response.json();
+
+            if (!data.success || data.data.length === 0 || data.data.every(item => item.incorrect_count === 0)) {
+                failureChartSection.classList.add('hidden'); // Hide if no data or all counts are zero
+                if (failureChartInstance) {
+                    failureChartInstance.destroy(); // Destroy existing chart if no data
+                    failureChartInstance = null;
+                }
+                return;
+            }
+            failureChartSection.classList.remove('hidden'); // Show if data exists
+
+            const words = data.data.map(item => item.word);
+            const incorrectCounts = data.data.map(item => item.incorrect_count);
+
+            // Calculate cumulative percentage for Pareto chart
+            let totalIncorrectAttempts = incorrectCounts.reduce((sum, count) => sum + count, 0);
+            let cumulativeSum = 0;
+            const cumulativePercentages = incorrectCounts.map(count => {
+                cumulativeSum += count;
+                return totalIncorrectAttempts > 0 ? (cumulativeSum / totalIncorrectAttempts) * 100 : 0;
+            });
+
+            if (failureChartInstance) {
+                failureChartInstance.destroy(); // Destroy existing chart instance to redraw
+            }
+
+            failureChartInstance = new Chart(failureFrequencyChartCanvas, {
+                type: 'bar',
+                data: {
+                    labels: words,
+                    datasets: [{
+                        label: 'Incorrect Count',
+                        data: incorrectCounts,
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)', // Reddish for failures
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        borderWidth: 1,
+                        order: 2 // Bars should be behind the line
+                    },
+                    {
+                        type: 'line', // For Pareto line
+                        label: 'Cumulative %',
+                        data: cumulativePercentages,
+                        borderColor: 'rgba(52, 152, 219, 1)', // Blue for line
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        fill: false,
+                        tension: 0.1, // Smooth the line
+                        yAxisID: 'y1', // Use a secondary Y-axis
+                        pointRadius: 4, // Make points visible
+                        pointBackgroundColor: 'rgba(52, 152, 219, 1)',
+                        pointBorderColor: 'white',
+                        pointBorderWidth: 1,
+                        order: 1 // Line should be on top
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Word'
+                            },
+                             ticks: {
+                                // Rotate labels if they overlap
+                                autoSkip: false,
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        },
+                        y: { // Primary Y-axis for counts
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Incorrect Pronunciations'
+                            }
+                        },
+                        y1: { // Secondary Y-axis for percentages (Pareto)
+                            type: 'linear',
+                            display: true,
+                            position: 'right', // Place on right side
+                            beginAtZero: true,
+                            max: 100, // Max percentage is 100
+                            grid: {
+                                drawOnChartArea: false // Only draw grid lines for the first axis
+                            },
+                            title: {
+                                display: true,
+                                text: 'Cumulative Percentage (%)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Top Words by Failure Frequency (Pareto Chart)',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.dataset.type === 'line') {
+                                        label += context.raw.toFixed(2) + '%';
+                                    } else {
+                                        label += context.raw;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error loading failure frequency chart:', error);
+            // If an error occurs or no data, ensure the chart section is hidden.
+            failureChartSection.classList.add('hidden');
+        }
+    }
+
     // Initial load
     loadWordList();
-    showSection(managementSection); // Start on the management section
+    showSection(managementSection); // Start on the management section, which now triggers chart load
 });

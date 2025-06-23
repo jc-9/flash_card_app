@@ -250,6 +250,21 @@ def get_results():
     results = calculate_overall_results()
     return jsonify({"success": True, "results": results})
 
+@app.route('/api/failure_frequency', methods=['GET'])
+def get_failure_frequency():
+    """Retrieves words sorted by highest incorrect pronunciation count for Pareto chart."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    # Order by incorrect_count descending, then by word_text for consistent ordering of ties
+    cursor.execute("SELECT word_text, incorrect_count FROM words ORDER BY incorrect_count DESC, word_text ASC")
+    words_data = cursor.fetchall()
+    conn.close()
+
+    # Convert rows to dictionaries for easier access
+    formatted_data = [{"word": dict(row)["word_text"], "incorrect_count": dict(row)["incorrect_count"]} for row in words_data]
+    return jsonify({"success": True, "data": formatted_data})
+
+
 # --- Application Startup ---
 if __name__ == '__main__':
     # Initialize the database when the application starts
