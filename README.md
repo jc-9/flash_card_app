@@ -32,3 +32,28 @@ Make sure Docker is running after installation. You can verify by opening a term
 ```bash
 docker --version
 docker compose version # If you plan to use docker compose later
+```
+
+### 2. Pull the Docker Image
+
+Once Docker is installed and running, you can pull the pre-built application image from Docker Hub.
+
+Replace `YOUR_DOCKERHUB_USERNAME` with your actual Docker Hub username:
+
+```bash
+docker pull YOUR_DOCKERHUB_USERNAME/vocabulary-flashcards-app:latest
+```
+
+### 3. Create and Run the Docker Container
+
+To run the application and ensure your vocabulary data persists even if the container is stopped or removed, we will use a [Docker volume mount](https://docs.docker.com/storage/volumes/).
+
+First, navigate to the directory where you want to store your application's data (e.g., your preferred projects folder). Create a subdirectory named `data` in this location if it doesn't exist already:
+
+```bash
+# Example: Create a project directory and then a data subdirectory
+mkdir vocabulary-app-data
+cd vocabulary-app-data
+mkdir data
+```
+
