@@ -64,10 +64,23 @@ Now, from the vocabulary-app-data directory (or wherever you want your data fold
 ```bash
 docker run -p 5010:5010 -v "<path to your directory>/data:/app/data" justinmelmarclay/flashcards-app:v1.2
 ```
--p 5000:5000: Maps port 5000 on your computer to port 5000 inside the Docker container.
+-p 5010:5010: Maps port 5010 on your computer to port 5010 inside the Docker container. Note: you can pick any port that is availble. If port 5010 is being used, then pick 5011 and go on from there until you find one that works, but keep the docker container port as 5010 (the port on the right). So this would look like 5011:5010
 
--v "$(pwd)/data:/app/data": This is crucial! It mounts your host machine's <path to your directory> /data directory (relative to where you run the command) to the /app/data directory inside the container. This means:
+-v "<path to your directory>/data:/app/data": This is crucial! It mounts your host machine's <path to your directory> /data directoryto the /app/data directory inside the container. This means:
 
 Your vocabulary.db SQLite database will be stored in your local data folder.
 
 Any words you upload or statistics you generate will be saved on your local machine and persist across container restart
+
+### Step 4. Run the container 
+
+4. Use the App
+Once the Docker container is running, open your web browser and navigate to:
+
+http://localhost:5010/ or whatever port you decided to use (ie. http://localhost:5011/)
+
+You should see the Vocabulary Flash Cards App!
+
+Watch a quick demo on how to use the app:
+
+[![Video Title or Description](https://img.youtube.com/vi/YOUR_VIDEO_ID/hqdefault.jpg)](YOUR_VIDEO_LINK)
