@@ -3,7 +3,7 @@
 
 Mastering new vocabulary just got easier and smarter! The Vocabulary Flash Cards App is a simple web application designed to help you learn and practice new words, track your pronunciation efforts, and identify challenging words using a visual Pareto chart.
 
-![App Screenshot](flashcard app new screen.jpg)
+![flashcard app new screen.jpg](https://github.com/jc-9/flash_card_app/blob/main/flashcard%20app%20new%20screen.jpg)
 
 ## ✨ Features
 
