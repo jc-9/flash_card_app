@@ -83,4 +83,4 @@ docker run -p 5010:5010 -v "<path to your directory>/data:/app/data" justinmelma
 
 * Watch a quick demo on how to use the app:
 
-[![Flashcard App]([https://img.youtube.com/vi/YOUR_VIDEO_ID/hqdefault.jpg](https://github.com/jc-9/flash_card_app/blob/main/flashcard%20app%20new%20screen.jpg))](https://youtu.be/ovLI9Y-f1zQ)
+[![Flashcard App](https://github.com/jc-9/flash_card_app/blob/main/flashcard%20app%20new%20screen.jpg)](https://youtu.be/ovLI9Y-f1zQ)
