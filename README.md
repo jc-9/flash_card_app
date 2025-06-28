@@ -19,6 +19,8 @@ Mastering new vocabulary just got easier and smarter! The Vocabulary Flash Cards
 
 This guide will help you get the Vocabulary Flash Cards App up and running on your local machine using Docker.
 
+Note: The instructions here are showing you how to configure Docker though the command line interface (CLI). There is an alternative way (and probably easier way) to do the same thing via "Docker Desktop". See video below if you need more information. 
+
 ### 1. Prerequisites: Install Docker
 
 First, you need to have Docker installed on your system. Follow the official Docker installation guide for your operating system:
@@ -27,7 +29,6 @@ First, you need to have Docker installed on your system. Follow the official Doc
 * **macOS:** [Install Docker Desktop on Mac](https://docs.docker.com/desktop/install/mac-install/)
 * **Linux:** [Install Docker Engine on Linux](https://docs.docker.com/engine/install/) (Choose your specific distribution, e.g., Ubuntu, Debian, CentOS).
 
-Note: The instructions here are showing you how to configure Docker though the command line interface (CLI). There is an alternative way (and probably easier way) to do the same thing via "Docker Desktop". See video below if you need more information. 
 
 Make sure Docker is running after installation. You can verify by opening a terminal and typing:
 
