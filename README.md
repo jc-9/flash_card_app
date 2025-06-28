@@ -84,3 +84,4 @@ docker run -p 5010:5010 -v "<path to your directory>/data:/app/data" justinmelma
 * Watch a quick demo on how to use the app:
 
 [![Video Title or Description](https://img.youtube.com/vi/YOUR_VIDEO_ID/hqdefault.jpg)](YOUR_VIDEO_LINK)
+!https://youtu.be/ovLI9Y-f1zQ
