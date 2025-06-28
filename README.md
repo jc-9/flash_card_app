@@ -27,6 +27,8 @@ First, you need to have Docker installed on your system. Follow the official Doc
 * **macOS:** [Install Docker Desktop on Mac](https://docs.docker.com/desktop/install/mac-install/)
 * **Linux:** [Install Docker Engine on Linux](https://docs.docker.com/engine/install/) (Choose your specific distribution, e.g., Ubuntu, Debian, CentOS).
 
+Note: The instructions here are showing you how to configure Docker though the command line interface (CLI). There is an alternative way (and probably easier way) to do the same thing via "Docker Desktop". See video below if you need more information. 
+
 Make sure Docker is running after installation. You can verify by opening a terminal and typing:
 
 ```bash
@@ -40,6 +42,8 @@ Docker version 28.0.4, build b8034c0
 
 ### 2. Pull the Docker Image
 
+Note: The instructions here are showing you how to configure Docker though the command line interface (CLI). There is an alternative way (and probably easier way) to do the same thing via "Docker Desktop". See video below if you need more information. 
+
 Once Docker is installed and running, you can pull the pre-built application image from Docker Hub. Right now we are using V1.2 for the version number but you can check out my docker hub for the latest version
 
 ```bash
@@ -47,6 +51,8 @@ docker pull justinmelmarclay/vocabulary-flashcards-app:v1.2
 ```
 
 ### 3. Create and Run the Docker Container
+
+Note: The instructions here are showing you how to configure Docker though the command line interface (CLI). There is an alternative way (and probably easier way) to do the same thing via "Docker Desktop". See video below if you need more information. 
 
 When running the application, we will need to save all the data to a directory on your sysyem. This where the word database will be saved so that in the event that you need to restart this application you can re-connect to the same data and nothing will be lost. This is important because if/when the docker system crashes, you want to have all the data saved so you can pick right back up where you were. 
 
@@ -73,6 +79,8 @@ docker run -p 5010:5010 -v "<path to your directory>/data:/app/data" justinmelma
 * Any words you upload or statistics you generate will be saved on your local machine and persist across container restart
 
 ### Step 4. Run the container 
+
+Note: The instructions here are showing you how to configure Docker though the command line interface (CLI). There is an alternative way (and probably easier way) to do the same thing via "Docker Desktop". See video below if you need more information. 
 
 4. Use the App
 * Once the Docker container is running, open your web browser and navigate to:
