@@ -81,6 +81,7 @@ docker run -p 5010:5010 -v "<path to your directory>/data:/app/data" justinmelma
 
 * You should see the Vocabulary Flash Cards App!
 
-* Watch a quick demo on how to use the app:
+
+### Watch a quick demo on how to use the app:
 
 [![Flashcard App](https://github.com/jc-9/flash_card_app/blob/main/flashcard%20app%20new%20screen.jpg)](https://youtu.be/ovLI9Y-f1zQ)
